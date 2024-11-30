@@ -2,7 +2,7 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicopr/aws"
+      source  = "hashicorp/aws"
       version = "4.45.0"
     }
   }
@@ -29,4 +29,14 @@ provider "aws" {
 #fetch resource details using data source
 data "aws_instance" "my_instance_meta" {
   instance_id = var.aws_instance_id
+}
+
+output "instance_metadata" {
+  value = jsondecode({
+    instance_id       = data.aws_instance.my_instance_meta.instance_id
+    instance_type     = data.aws_instance.my_instance_meta.instance_type
+    availability_zone = data.aws_instance.my_instance_meta.availability_zone
+    private_ip        = data.aws_instance.my_instance_meta.private_ip
+    security_groups   = data.aws_instance.my_instance_meta.security_groups
+  })
 }
